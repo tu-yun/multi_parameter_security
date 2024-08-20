@@ -1,15 +1,10 @@
 package kr.or.thekeeperskorea.mb_usr.resource;
 
-import jakarta.validation.Valid;
-
 import kr.or.thekeeperskorea.mb_usr.common.annotation.CurrentUser;
-import kr.or.thekeeperskorea.mb_usr.model.car.CarEntExitReqInfoDto;
 import kr.or.thekeeperskorea.mb_usr.model.car.UnregCarDto;
 import kr.or.thekeeperskorea.mb_usr.model.car.UserCarDto;
 import kr.or.thekeeperskorea.mb_usr.model.user.UserDto;
-import kr.or.thekeeperskorea.mb_usr.service.CarService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
