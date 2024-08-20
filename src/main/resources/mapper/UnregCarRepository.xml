@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.thekeeperskorea.mb_usr.repository.UnregCarRepository">
+
+    <insert id="setInsert">
+        INSERT INTO TBL_UNREG_CAR
+        (
+            car_no
+        ,car_dv_ty
+        ,ee_stt_cd_id
+        ,ee_stt_chg_dtm
+        ,del_at
+        ,use_at
+        ,reg_ps_id
+        ,reg_dtm
+        ,usr_id
+        ,prkplce_id
+        )
+        VALUES
+            (
+                #{carNo}
+            ,#{carDvTy}
+            ,#{eeSttCdId}
+            ,#{eeSttChgDtm}
+            ,#{delAt}
+            ,#{useAt}
+            ,#{regPsId}
+            ,#{regDtm}
+            ,#{usrId}
+            ,#{prkplceId}
+            )
+    </insert>
+
+    <select id="getLoad" parameterType="java.lang.Object" resultType="UnregCarDto">
+        select
+            unreg_car_manage_id
+           ,car_no
+           ,car_dv_ty
+           ,ee_stt_cd_id
+           ,ee_stt_chg_dtm
+           ,rmk
+           ,del_at
+           ,use_at
+           ,reg_ps_id
+           ,reg_dtm
+           ,upd_ps_id
+           ,upd_dtm
+           ,usr_id
+           ,prkplce_id
+        from TBL_UNREG_CAR
+        where del_at ='N'
+          and use_at = 'Y'
+          and usr_id = #{usrId}
+          and car_no = #{carNo}
+    </select>
+
+    <update id="unregModify" parameterType="kr.or.thekeeperskorea.mb_usr.model.car.UnregCarDto">
+        update TBL_UNREG_CAR
+        <set>
+            <if test="carNo != null and carNo != '' " >
+                car_no = #{carNo},
+            </if>
+            <if test="carDvTy != null and carDvTy != '' ">
+                car_dv_ty = #{carDvTy},
+            </if>
+            <if test="eeSttCdId != null and eeSttCdId != '' ">
+                ee_stt_cd_id = #{eeSttCdId},
+            </if>
+            <if test="eeSttChgDtm != null">
+                ee_stt_chg_dtm = #{eeSttChgDtm},
+            </if>
+            <if test="rmk != null and rmk != '' ">
+                rmk = #{rmk},
+            </if>
+            <if test="updPsId != null and updPsId != '' ">
+                upd_ps_id = #{updPsId},
+            </if>
+            <if test="updDtm != null ">
+                upd_dtm = #{updDtm},
+            </if>
+            <if test="prkplceId != null and prkplceId != '' ">
+                prkplce_id = #{prkplceId},
+            </if>
+            <if test="carEeReqInfoId != null and carEeReqInfoId != '' ">
+                car_ee_req_info_id = #{carEeReqInfoId},
+            </if>
+        </set>
+        where usr_id = #{usrId}
+        and car_no = #{carNo}
+    </update>
+
+</mapper>
+
+
+

@@ -1,0 +1,123 @@
+<div id="alertPopup" class="system_alert">
+    <div class="dim"></div>
+    <div class="popup">
+        <div class="pop_cont">
+            <i id="alertPopupIco" class="ico ico_check"></i>
+            <strong id="alertPopupTit">제목</strong>
+            <p id="alertPopupMsg">내용</p>
+        </div>
+        <div class="pop_foot">
+            <button type="button" id="pm_alertBtn" class="btn fill_primary btn_file_del">확인</button>
+        </div>
+    </div>
+</div>
+
+<div id="confirmPopup" class="system_alert">
+    <div class="dim"></div>
+    <div class="popup">
+        <div class="pop_cont">
+            <i class="ico ico_alert"></i>
+            <strong id="confirmPopupTit">제목</strong>
+            <p id="confirmPopupMsg">내용</p>
+        </div>
+        <div class="pop_foot type01">
+            <button type="button" id="pm_confirmBtn" class="btn fill_primary btn_file_del">확인</button>
+            <button type="button" id="pm_cancelBtn" class="pop_cancel">취소합니다</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //완료 alert팝업 열기
+    function fn_complatePopup(title, message){
+        return new Promise(function(resolve) {
+            const alertPopupIco = document.getElementById("alertPopupIco");
+            alertPopupIco.classList.remove("ico_error");
+            alertPopupIco.classList.add("ico_check");
+
+            const alertPopupTit = document.getElementById("alertPopupTit");
+            if (alertPopupTit) alertPopupTit.textContent = title;
+
+            const alertPopupMsg = document.getElementById("alertPopupMsg");
+            if (alertPopupMsg) alertPopupMsg.textContent = message;
+
+            layerShow("alertPopup");
+
+            document.getElementById("pm_alertBtn").addEventListener("click", function(){
+                layerHide('alertPopup');
+                resolve(1);
+            })
+        });
+    }
+
+    //에러 alert팝업 열기
+    function fn_errorPopup(title, message){
+        return new Promise(function(resolve) {
+            const alertPopupIco = document.getElementById("alertPopupIco");
+            alertPopupIco.classList.remove("ico_check");
+            alertPopupIco.classList.add("ico_error");
+
+            const alertPopupTit = document.getElementById("alertPopupTit");
+            if (alertPopupTit) alertPopupTit.textContent = title;
+
+            const alertPopupMsg = document.getElementById("alertPopupMsg");
+            if (alertPopupMsg) alertPopupMsg.textContent = message;
+
+            layerShow("alertPopup");
+
+            document.getElementById("pm_alertBtn").addEventListener("click", function(){
+                layerHide('alertPopup');
+                resolve(1);
+            })
+        });
+    }
+
+    //에러 alert팝업 열기(Html 타입)
+    function fn_errorHtmlPopup(title, message){
+        return new Promise(function(resolve) {
+            const alertPopupIco = document.getElementById("alertPopupIco");
+            alertPopupIco.classList.remove("ico_check");
+            alertPopupIco.classList.add("ico_error");
+
+            const alertPopupTit = document.getElementById("alertPopupTit");
+            if (alertPopupTit) alertPopupTit.textContent = title;
+
+            const alertPopupMsg = document.getElementById("alertPopupMsg");
+            if (alertPopupMsg) {
+                alertPopupMsg.textContent = "";
+                alertPopupMsg.insertAdjacentHTML("afterbegin", message);
+            }
+
+            layerShow("alertPopup");
+
+            document.getElementById("pm_alertBtn").addEventListener("click", function(){
+                alertPopupMsg.textContent = "";
+                layerHide('alertPopup');
+                resolve(1);
+            })
+        });
+    }
+
+    //confirm팝업 열기
+    function fn_confirmPopup(title, message){
+        return new Promise(function(resolve) {
+            const confirmPopupTit = document.getElementById("confirmPopupTit");
+            if (confirmPopupTit) confirmPopupTit.textContent = title;
+
+            const confirmPopupMsg = document.getElementById("confirmPopupMsg");
+            if (confirmPopupMsg) confirmPopupMsg.textContent = message;
+
+            layerShow("confirmPopup");
+
+            document.getElementById("pm_confirmBtn").addEventListener("click", function(){
+                layerHide('confirmPopup');
+                resolve(1);
+            })
+
+            document.getElementById("pm_cancelBtn").addEventListener("click", function(){
+                layerHide('confirmPopup');
+                resolve(0);
+            })
+        });
+    }
+</script>

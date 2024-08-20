@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.thekeeperskorea.mb_usr.repository.MypageRepository">
+
+    <update id="updatePassword" parameterType="java.lang.Object">
+        UPDATE TBL_USER
+        SET pwd = #{newPw}
+          ,pwd_initl_at = 'N'
+          ,upd_ps_id = #{usrId}
+          ,upd_dtm = NOW()
+        WHERE usr_dv_ty = 'User'
+          AND usr_id = #{usrId}
+          AND prkplce_id = #{prkplceId}
+    </update>
+
+    <update id="updatePasswordNew" parameterType="java.lang.Object">
+        UPDATE TBL_USER
+        SET pwd = #{newPw}
+          ,pwd_initl_at = 'N'
+          ,upd_ps_id = #{usrId}
+          ,upd_dtm = NOW()
+        WHERE usr_dv_ty = 'User'
+          AND usr_id = #{usrId}
+    </update>
+
+</mapper>

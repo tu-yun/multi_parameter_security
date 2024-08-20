@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments/head}"></th:block>
+
+    <script type="text/javascript">
+        //로그인 실행
+        async function fn_login(){
+            const usrId1 = document.querySelector("input[name='userId1']");
+            const usrId2 = document.querySelector("input[name='userId2']");
+            const usrPw = document.querySelector("input[name='userPw']");
+
+            if(!usrId1.value){
+                await fn_errorPopup("로그인 실패", "동을 입력해 주세요.");
+                usrId1.focus();
+                return false;
+            }
+
+            if(!usrId2.value){
+                await fn_errorPopup("로그인 실패", "호수를 입력해 주세요.");
+                usrId2.focus();
+                return false;
+            }
+
+            if(!usrPw.value){
+                await fn_errorPopup("로그인 실패", "비밀번호를 입력해 주세요.");
+                usrPw.focus();
+                return false;
+            }
+
+            const data = {
+                userId: userId1.value + "D" + userId2.value + "H",
+                userPw: document.querySelector("input[name='userPw']").value,
+                parkingPlace: document.querySelector("input[name='parkingPlace']").value,
+                usrMe: document.querySelector("input[name='usrMe']").checked
+            }
+
+            $.ajax({
+                url: fn_pathname("/login_proc"),
+                type: "post",
+                data: data,
+                dataType: "json",
+                success: function(data){
+                    if(data && data.pwdInitlAt == "Y"){
+                        layerShow("alertPwChk");
+                    } else {
+                        location.href = fn_pathname("/home/dashBoard");
+                    }
+                },
+                error: async function(xhr){
+                    await fn_errorPopup("로그인 실패", xhr.responseJSON.message);
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+<div id="login_wrap">
+    <div id="login_container">
+        <h1 class="logo">
+            <span class="blind">THEKEEPERSKOREA</span>
+        </h1>
+            <div class="in_tit">
+                <p>주차 · 발렛 서비스 이용을 위해,</p>
+                <strong th:if="${_1stPathname eq '/office'}">성명 및 직급을 입력해주세요.</strong>
+                <strong th:unless="${_1stPathname eq '/office'}">동호수를 입력해주세요.</strong>
+            </div>
+        <div class="login_box">
+            <form id="form1" name="form1" method="post">
+                <fieldset>
+                    <legend>로그인</legend>
+                    <div class="login_form">
+                        <th:block th:if="${_1stPathname eq '/office'}">
+                            <div class="input_area">
+                                <div class="input">
+                                    <label for="userId1" class="blind">이름</label>
+                                    <input type="text" name="userId1" id="userId1" class="rule_noSpace" placeholder="예) 홍길동">
+                                    <a href="javascript:void(0);" class="btn_del"><span class="blind">삭제</span></a>
+                                </div>
+                                <div class="input">
+                                    <label for="userId2" class="blind">직급</label>
+                                    <input type="text" name="userId2" id="userId2" class="rule_noSpace" placeholder="예) 사원">
+                                    <a href="javascript:void(0);" class="btn_del"><span class="blind">삭제</span></a>
+                                </div>
+                            </div>
+                            <div class="input">
+                                <label for="userPw" class="blind">비밀번호</label>
+                                <input type="password" name="userPw" id="userPw" class="rule_noSpace" placeholder="비밀번호를 입력해주세요.">
+                                <a href="javascript:void(0);" class="btn_del"><span class="blind">삭제</span></a>
+                            </div>
+                            <div class="input">
+                                <input type="hidden" name="parkingPlace" value="2">
+                            </div>
+                        </th:block>
+                        <th:block th:unless="${_1stPathname eq '/office'}">
+                            <div class="input_area">
+                                <div class="input">
+                                    <label for="userId1" class="blind">동수</label>
+                                    <input type="text" name="userId1" id="userId1" class="rule_noSpace" placeholder="예) 101">
+                                    <a href="javascript:void(0);" class="btn_del"><span class="blind">삭제</span></a>
+                                </div>
+                                <div class="input">
+                                    <label for="userId2" class="blind">호수</label>
+                                    <input type="text" name="userId2" id="userId2" class="rule_noSpace" placeholder="예) 1001">
+                                    <a href="javascript:void(0);" class="btn_del"><span class="blind">삭제</span></a>
+                                </div>
+                            </div>
+                            <div class="input">
+                                <label for="userPw" class="blind">비밀번호</label>
+                                <input type="password" name="userPw" id="userPw" class="rule_noSpace" placeholder="비밀번호를 입력해주세요.">
+                                <a href="javascript:void(0);" class="btn_del"><span class="blind">삭제</span></a>
+                            </div>
+                            <div class="input">
+                                <input type="hidden" name="parkingPlace" value="1">
+                            </div>
+                        </th:block>
+                        <div class="login_option">
+                            <div class="chk_area">
+                                <div class="checkbox sc_chk txt">
+                                    <input type="checkbox" name="usrMe" id="usrMe"/>
+                                    <label for="usrMe">자동 로그인</label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn_login btn fill_primary w100p" onclick="return fn_login();">로그인</button>
+                    </div>
+                </fieldset>
+            </form>
+
+        </div>
+    </div>
+    <div class="alram_box">
+        <p class="tit">알립니다.</p>
+        <ul>
+            <li>관리사무소에 차량 등록 후에 이용 가능합니다.</li>
+            <li>비밀번호 분실 시 관리사무소로 문의 바랍니다.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- 최초로그인 alert -->
+<div id="alertPwChk" class="system_alert">
+    <div class="dim"></div>
+    <div class="popup">
+        <div class="pop_cont">
+            <i class="ico ico_alert"></i>
+            <strong>처음 로그인 하셨나요?</strong>
+            <p>
+                안전한 사용을 위해, 비밀번호를<br>
+                재설정 해주세요. (4~20자 이내)
+            </p>
+        </div>
+        <div class="pop_foot type01">
+            <a th:href="|${_1stPathname}/mypage/secret/init|" class="btn fill_primary">변경하고 안전하게 이용하기
+            </a>
+            <a th:href="|${_1stPathname}/logout|" class="pop_cancel">다음에할게요</a>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="~{fragments/footer}"></th:block>
+</body>
+</html>

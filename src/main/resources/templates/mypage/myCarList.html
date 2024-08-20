@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:insert="~{fragments/head}"></th:block>
+  <script type="text/javascript">
+    $(document).ready(function(){
+
+    });
+  </script>
+</head>
+<body>
+<div id="wrap">
+  <div id="container">
+    <div class="sub_tit_area">
+      <div>
+        <a href="javascript:void(0);" class="back_btn" onclick="history.back()">
+          <span class="blind">뒤로가기</span>
+        </a>
+        <strong>나의 차량 현황</strong>
+      </div>
+
+    </div>
+    <div class="sec">
+      <div class="contents car_list_area">
+        <ul id="myCarList" class="car_list type02">
+          <li th:each="car, stat : ${myCarList}">
+            <a href="javascript:void(0)" class="box">
+              <div class="box_1">
+                <div class="txt">
+                  <strong th:text="${car.carNo}">12마 1234</strong>
+                </div>
+                <!--상태값 별로 작업 상태값 미지정-->
+                <div class="chip_area">
+                  <div class="chip fill_yellow40">
+                    <span >방문차량</span>
+                  </div>
+                </div>
+              </div>
+              <div class="box_2">
+                <div class="date01">
+                  차량등록일 : <span th:text="${#temporals.format(car.vhcleRegDt, 'yy.MM.dd') ?: '-- . -- . --'}">23.12.16</span>
+                </div>
+                <div class="date02">
+                  최종결제일  : <span th:text="${#temporals.format(car.lastCalcDt, 'yy.MM.dd') ?: '-- . -- . --'}">23.12.16</span>
+                </div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

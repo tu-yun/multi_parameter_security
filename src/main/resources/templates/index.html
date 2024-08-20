@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments/head}"></th:block>
+
+    <script type="text/javascript">
+        $(function () {
+            setTimeout(function(){
+                $('.splash_box').fadeOut();
+                const pathNm = location.pathname;
+                if(pathNm.indexOf("apt") > -1 || pathNm.indexOf("office") > -1){
+                    location.href = fn_pathname("/home/dashBoard");
+                } else {
+                    location.href = "/apt/home/dashBoard";
+                }
+            },2000 )
+        });
+    </script>
+</head>
+<body>
+<div id="login_wrap">
+    <div id="login_container"></div>
+    <div class="splash_box">
+        <div class="logo">
+            <span class="blind">로고</span>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="~{fragments/footer}"></th:block>
+</body>
+</html>

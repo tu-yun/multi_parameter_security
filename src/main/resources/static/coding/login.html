@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>대시보드 | 모빌리티</title>
+    <meta property="og:keywords" content="문학동네" />
+    <meta property="og:description" content="문학동네" />
+    <meta property="og:image" content="../ClientUI/images/common/meta_logo.jpg" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../ClientUI/images/icon/favicon.ico" />
+
+    <link rel="stylesheet" href="../../ClientUI/plugins/datetimepicker/jquery.datetimepicker.min.css"/>
+    <link rel="stylesheet" href="../../ClientUI/plugins/jqueryScrollbar/jquery.scrollbar.css"/>
+    <link rel="stylesheet" href="../../ClientUI/plugins/slick/slick.css"/>
+    <link rel="stylesheet" href="../../ClientUI/plugins/slick/slick-theme.css"/>
+
+    <link rel="stylesheet" href="../../ClientUI/css/common.css"/>
+    <link rel="stylesheet" href="../../ClientUI/css/style.css"/>
+    <link rel="stylesheet" href="../../ClientUI/css/login.css"/>
+
+    <script type="text/javascript" src="../../ClientUI/plugins/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="../../ClientUI/plugins/datetimepicker/jquery.datetimepicker.full.js"></script>
+    <script type="text/javascript" src="../../ClientUI/plugins/jqueryScrollbar/jquery.scrollbar.min.js"></script>
+    <script type="text/javascript" src="../../ClientUI/plugins/jquery.nice-select.min.js"></script>
+    <script type="text/javascript" src="../../ClientUI/plugins/slick/slick.min.js"></script>
+
+    <script type="text/javascript" src="../../ClientUI/js/file.js"></script>
+    <script type="text/javascript" src="../../ClientUI/js/style.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+<div id="login_wrap">
+    <div id="login_container">
+        <h1 class="logo">
+            <span class="blind">THEKEEPERSKOREA</span>
+        </h1>
+            <div class="in_tit">
+                <p>주차 · 발렛 서비스 이용을 위해,</p>
+                <strong>동호수를 입력해주세요.</strong>
+            </div>
+        <div class="login_box">
+            <form id="form1" name="form1" method="post">
+                <input type="hidden" id="msg" th:value="${msg}"/>
+                <input type="hidden" id="errormsg" th:value="${errormsg}"/>
+                <fieldset>
+                    <legend>로그인</legend>
+                    <div class="login_form">
+                        <div class="input_area">
+                            <div class="input">
+                                <label for="userBuilding" class="blind">동수</label>
+                                <input type="text" name="userId" id="userBuilding" placeholder="예) 101동">
+                                <a href="javascript:void(0);" class="btn_del"><span class="blind">삭제</span></a>
+                            </div>
+                            <div class="input">
+                                <label for="userRoom" class="blind">호수</label>
+                                <input type="text" name="userId" id="userRoom" placeholder="예) 1001호">
+                                <a href="javascript:void(0);" class="btn_del"><span class="blind">삭제</span></a>
+                            </div>
+                        </div>
+                        <div class="input">
+                            <label for="userPw" class="blind">비밀번호</label>
+                            <input type="password" name="userPw" id="userPw" placeholder="비밀번호를 입력해주세요.">
+                            <a href="javascript:void(0);" class="btn_del"><span class="blind">삭제</span></a>
+                        </div>
+                        <div class="login_option">
+                            <div class="chk_area">
+                                <div class="checkbox sc_chk txt">
+                                    <input type="checkbox" name="save-me" id="save-me"/>
+                                    <label for="save-me">자동 로그인</label>
+                                </div>
+                            </div>
+                            <a href="/coding/modify.html">비밀번호 변경</a>
+                        </div>
+                        <button type="submit" class="btn_login btn fill_primary w100p" onclick="return fn_chkLogin();">로그인</button>
+                    </div>
+                </fieldset>
+            </form>
+
+        </div>
+    </div>
+    <div class="alram_box">
+        <p class="tit">알립니다.</p>
+        <ul>
+            <li>관리사무소에 차량 등록 후에 이용 가능합니다.</li>
+            <li>비밀번호 분실 시 관리사무소로 문의 바랍니다.</li>
+        </ul>
+    </div>
+</div>
+<div id="alertPwChk" class="system_alert active">
+    <div class="dim"></div>
+    <div class="popup">
+        <div class="pop_cont">
+            <i class="ico ico_alert"></i>
+            <strong>처음 로그인 하셨나요?</strong>
+            <p>
+                안전한 사용을 위해, 비밀번호를<br>
+                재설정 해주세요. (4~20자 이내)
+            </p>
+        </div>
+        <div class="pop_foot type01">
+            <a href="javascript:void(0);"  class="btn fill_primary">변경하고 안전하게 이용하기
+            </a>
+            <a href="javascirpt:void(0);" class="pop_cancel" onclick="layerHide('alertPwChk')">다음에할게요</a>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.thekeeperskorea.mb_usr.repository.CarRepository">
+
+    <select id="selectMyCarList" parameterType="java.lang.Object" resultType="UserCarDto">
+        select
+            tuc.car_no
+            ,DATE_FORMAT(tuc.vhcle_reg_dt,'%Y-%m-%d') as vhcle_reg_dt
+            ,DATE_FORMAT(tucc2.last_calc_dt,'%Y-%m-%d') as last_calc_dt
+            ,tuc.car_dv_ty
+        from TBL_USER tu
+        inner join TBL_USER_CAR tuc on tu.usr_id = tuc.usr_id
+        left join (
+                    select car_manage_id,
+                        GREATEST(IFNULL(MAX(reg_dtm), 0),
+                        IFNULL(MAX(upd_dtm), 0)) AS last_calc_dt
+                    from TBL_USER_CAR_CALC
+                        where stt_cd_id = 301
+                            and del_at ='N'
+                            and use_at = 'Y'
+                    group by car_manage_id) tucc2 ON tuc.car_manage_id = tucc2.car_manage_id
+        where tu.usr_id = #{usrId}
+    </select>
+
+    <select id="selectUtlCarCnt" resultType="int">
+        select
+            COUNT(*)
+        <include refid="selectUtlCar_from"></include>
+        <include refid="selectUtlCar_where"></include>
+    </select>
+
+    <update id="userModify" parameterType="kr.or.thekeeperskorea.mb_usr.model.car.UserCarDto">
+        update TBL_USER_CAR
+        <set>
+            <if test="carNo != null and carNo != '' " >
+                car_no = #{carNo},
+            </if>
+            <if test="vhcleRegDt != null">
+                vhcle_reg_dt = #{vhcleRegDt},
+            </if>
+            <if test="carDvTy != null and carDvTy != '' ">
+                car_dv_ty = #{carDvTy},
+            </if>
+            <if test="sttCdId != null and sttCdId != '' ">
+                stt_cd_id = #{sttCdId},
+            </if>
+            <if test="thisMonthCalcAt != null and thisMonthCalcAt != '' ">
+                this_month_calc_at = #{thisMonthCalcAt},
+            </if>
+            <if test="nextMonthCalcAt != null and nextMonthCalcAt != '' ">
+                next_month_calc_at = #{nextMonthCalcAt},
+            </if>
+            <if test="thisMonthCalcAtRegDtm != null">
+                this_month_calc_at_reg_dtm = #{thisMonthCalcAtRegDtm},
+            </if>
+            <if test="eeSttCdId != null and eeSttCdId != '' ">
+                ee_stt_cd_id = #{eeSttCdId},
+            </if>
+            <if test="eeSttChgDtm != null">
+                ee_stt_chg_dtm = #{eeSttChgDtm},
+            </if>
+            <if test="rmk != null and rmk != '' ">
+                rmk = #{rmk},
+            </if>
+            <if test="updPsId != null and updPsId != '' ">
+                upd_ps_id = #{updPsId},
+            </if>
+            <if test="updDtm != null">
+                upd_dtm = #{updDtm},
+            </if>
+            <if test="prkplceId != null and prkplceId != '' ">
+                prkplce_id = #{prkplceId},
+            </if>
+            <if test="carEeReqInfoId != null and carEeReqInfoId != '' ">
+                car_ee_req_info_id = #{carEeReqInfoId}
+            </if>
+        </set>
+        where usr_id = #{usrId}
+        and car_no = #{carNo}
+    </update>
+
+
+
+
+    <select id="selectUtlCarList" parameterType="java.lang.Object" resultMap="UserCarMap">
+        SELECT
+            DATE_FORMAT(tceeh.reg_dtm, '%Y-%m-%d') AS reg_dt
+             ,tceeh.reg_dtm
+             ,tceeh.ee_stt_cd_id
+             ,case
+                  when tuc.unreg_car_manage_id is not null then tuc.unreg_car_manage_id
+                  when tuc2.car_manage_id is not null then tuc2.car_manage_id
+            end as manage_id
+             ,case
+                  when tuc.car_no is not null then tuc.car_no
+                  when tuc2.car_no  is not null then tuc2.car_no
+            end as car_no
+             ,case
+                  when tu.usr_id is not null then tu.usr_id
+                  when tu2.usr_id  is not null then tu2.usr_id
+            end as usr_id
+             ,case
+                  when tcc.cd_nm is not null then tcc.cd_nm
+                  when tcc2.cd_nm  is not null then tcc2.cd_nm
+            end as cd_nm
+             ,tuc.car_dv_ty
+        <include refid="selectUtlCar_from"></include>
+        <include refid="selectUtlCar_where"></include>
+        order by tceeh.reg_dtm desc
+    </select>
+
+    <sql id="selectUtlCar_from">
+        FROM TBL_CAR_ENT_EXIT_HST tceeh
+                 left join TBL_UNREG_CAR tuc on tuc.unreg_car_manage_id = tceeh.unreg_car_manage_id
+                 left join TBL_USER tu on tu.usr_id = tuc.usr_id
+                 left join TBL_COMMON_CODE tcc ON tuc.ee_stt_cd_id = tcc.cd_id AND tcc.delete_at = 'N'
+                 left join TBL_USER_CAR tuc2 on tuc2.car_manage_id = tceeh.car_manage_id
+                 left join TBL_USER tu2 on tu2.usr_id = tuc2.usr_id
+                 left join TBL_COMMON_CODE tcc2  ON tuc2.ee_stt_cd_id = tcc2.cd_id AND tcc.delete_at = 'N'
+    </sql>
+
+    <sql id="selectUtlCar_where">
+        <where>
+            <if test="usrId != null and usrId != '' ">
+                and (tu.usr_id = #{usrId}
+                or tu2.usr_id = #{usrId})
+            </if>
+            <if test="keyword != null and keyword != '' ">
+                and (tuc.car_no like CONCAT('%', #{keyword}, '%')
+                or tuc2.car_no like  CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="startDt != null and endDt != null">
+                and date(tceeh.reg_dtm) between #{startDt} and  #{endDt}
+            </if>
+        </where>
+    </sql>
+    <resultMap id="UserCarMap" type="UserCarMapDto">
+        <id column="reg_dt" property="regDt" />
+        <collection property="userCarList" javaType="java.util.List" ofType="UserCarDto">
+            <result column="ee_stt_cd_id" property="eeSttCdId" />
+            <result column="manage_id" property="manageId" />
+            <result column="car_no" property="carNo" />
+            <result column="reg_dtm" property="regDtm" />
+            <result column="usr_id" property="usrId" />
+            <result column="cd_nm" property="cdNm" />
+            <result column="car_dv_ty" property="carDvTy" />
+        </collection>
+    </resultMap>
+
+</mapper>
+
+
+

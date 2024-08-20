@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:insert="~{fragments/head}"></th:block>
+  <script type="text/javascript">
+
+
+    async function fn_logout(){
+      if(!await fn_confirmPopup("로그아웃", "로그아웃 하시겠습니까?")){
+        return false;
+      }
+      location.href = fn_pathname("/logout");
+    }
+     function fn_alert() {
+       fn_errorHtmlPopup("", "준비중입니다.");
+    }
+  </script>
+</head>
+<body>
+<div id="wrap">
+  <div class="sub_tit_area">
+    <div>
+      <a href="javascript:void(0);" class="back_btn" onclick="history.back()">
+        <span class="blind">뒤로가기</span>
+      </a>
+      <strong>나의 정보</strong>
+    </div>
+  </div>
+  <div id="container" class="mypage_area">
+    <div class="sec" th:each="myUser : ${selectMyUserList}">
+      <div class="contents">
+      <div class="profile_area">
+        <div class="profile_box">
+          <div class="thumbnail">
+            <span class="blind">프로필 사진</span>
+          </div>
+          <div>
+            <th:block th:if="${_1stPathname eq '/office'}">
+              <span><strong th:text="${myUser.aptDong}"></strong> </span>
+              <span><strong th:text="${myUser.aptHo}"></strong> 님</span>
+            </th:block>
+            <th:block th:unless="${_1stPathname eq '/office'}">
+              <span><strong th:text="${myUser.aptDong}"></strong>동</span>
+              <span><strong th:text="${myUser.aptHo}"></strong>호 님</span>
+            </th:block>
+            <p>오늘도 좋은 하루 보내세요! 🙌🏻</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="sec box">
+      <div class="contents">
+        <strong>정보 관리</strong>
+        <ul class="mypage_sub_link">
+          <li>
+            <a th:href="|${_1stPathname}/mypage/secret/modify|">
+              비밀번호 재설정
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="sec box">
+      <div class="contents">
+        <strong>이용정보</strong>
+        <ul class="mypage_sub_link">
+          <li><a href="javascript:void(0);" onclick="layerShow('pwForgot')">비밀번호를 잊으셨나요?</a></li>
+          <li><a href="javascript:void(0);" onclick="fn_alert();">약관 및 정책</a></li>
+          <li class="version"><div class="left">앱 버전</div> <div class="right"><div class="chip"><span>업데이트</span></div> <span>1.1.0</span></div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="btn_area">
+      <button type="button" class="btn fill_cool_grey20 w100p" onclick="fn_logout();">
+        <span>로그아웃</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="pwForgot" class="system_alert">
+  <div class="dim"></div>
+  <div class="popup">
+    <div class="pop_cont">
+      <i class="ico ico_alert"></i>
+      <strong>비밀번호를 잊으셨나요?</strong>
+      <a href="tel:02-1234-5678" class="alert_txt tel type_blue">02-1234-5678</a>
+      <p>
+        비밀번호 분실 시 관리사무소로<br>
+        문의해 주시기 바랍니다.
+      </p>
+    </div>
+    <div class="pop_foot">
+      <button type="button" id="trDel" class="btn fill_primary btn_file_del"
+              onclick="layerHide('pwForgot')">확인
+      </button>
+    </div>
+  </div>
+</div>
+<th:block th:insert="~{fragments/header}"></th:block>
+<th:block th:insert="~{fragments/footer}"></th:block>
+</body>
+</html>
+

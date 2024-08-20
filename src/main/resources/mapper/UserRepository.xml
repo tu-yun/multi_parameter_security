@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.or.thekeeperskorea.mb_usr.repository.UserRepository">
+
+    <select id="getLoad" parameterType="java.lang.String" resultType="UserDto">
+        SELECT a.usr_id
+               ,a.login_id
+               ,a.apt_dong
+               ,a.apt_ho
+               ,a.pwd
+               ,a.usr_dv_ty
+               ,a.pwd_initl_at
+               ,a.rmk
+               ,a.prkplce_id
+               ,b.prkplce_dv_ty
+        FROM TBL_USER a
+        INNER JOIN TBL_PARKING_PLACE b ON a.prkplce_id = b.prkplce_id AND b.del_at = 'N' AND b.use_at = 'Y'
+        WHERE a.del_at ='N'
+          AND a.use_at = 'Y'
+          AND a.secsn_at = 'N'
+          AND a.usr_dv_ty = 'User'
+          AND a.login_id = #{username}
+    </select>
+
+    <select id="getLoadByParkingPlace" parameterType="java.lang.Object" resultType="UserDto">
+        SELECT a.usr_id
+               ,a.login_id
+               ,a.apt_dong
+               ,a.apt_ho
+               ,a.pwd
+               ,a.usr_dv_ty
+               ,a.pwd_initl_at
+               ,a.rmk
+               ,a.prkplce_id
+               ,b.prkplce_dv_ty
+        FROM TBL_USER a
+        INNER JOIN TBL_PARKING_PLACE b ON a.prkplce_id = b.prkplce_id AND b.del_at = 'N' AND b.use_at = 'Y'
+        WHERE a.del_at ='N'
+          AND a.use_at = 'Y'
+          AND a.secsn_at = 'N'
+          AND a.usr_dv_ty = 'User'
+          AND a.login_id = #{username}
+          AND b.prkplce_id = #{parkingPlace}
+    </select>
+
+    <select id="insertUserLoginHst" parameterType="java.lang.Long">
+        INSERT INTO TBL_USER_LOGIN_HST
+        (
+            USR_ID
+            ,REG_DTM
+        )
+        VALUES
+        (
+             #{usrId}
+            ,NOW()
+        )
+    </select>
+
+    <select id="getUserSel" parameterType="java.lang.Long" resultType="UserDto">
+        select
+            tu.apt_dong
+             ,tu.apt_ho
+        from TBL_USER tu
+        where usr_id = #{usrId}
+    </select>
+
+    <select id="getMyUserList" parameterType="java.lang.Long" resultType="UserDto">
+        SELECT usr_id
+             ,login_id
+             ,apt_dong
+             ,apt_ho
+             ,pwd
+             ,usr_dv_ty
+             ,pwd_initl_at
+             ,rmk
+             ,prkplce_id
+        FROM TBL_USER
+        WHERE del_at ='N'
+          AND use_at = 'Y'
+          AND secsn_at = 'N'
+          AND usr_dv_ty = 'User'
+          AND usr_id = #{usrId}
+    </select>
+
+    <insert id="insertUserInfoChgHst" parameterType="UserInfoChgHstDto">
+        INSERT INTO TBL_USER_INFO_CHG_HST
+        (
+            chg_reason_cd_id
+        ,upd_ps_id
+        ,upd_dtm
+        ,usr_id
+        )
+        VALUES
+            (
+                #{chgReasonCdId}
+            ,#{updPsId}
+            ,NOW()
+            ,#{usrId}
+            )
+    </insert>
+
+</mapper>

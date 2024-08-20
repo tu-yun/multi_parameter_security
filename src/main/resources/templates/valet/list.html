@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <th:block th:insert="~{fragments/head}"></th:block>
+  <script type="text/javascript">
+
+    $(function () {
+      const week_array = new Array('일', '월', '화', '수', '목', '금', '토');
+      const startDt = "[[${startDt}]]";
+      const endDt = "[[${endDt}]]";
+      new Litepicker({
+        element: document.getElementById('date01'),
+        inlineMode: true,
+        autoApply: true,
+        parentEl: '#dateArea',
+        numberOfMonths: 1,
+        lang: 'ko-KR',
+        firstDay: 0,
+        startDate: startDt,
+        endDate: endDt,
+        singleMode: false,
+        showTooltip: false,
+        maxDate: new Date(),
+        maxDays: 31,
+        tooltipNumber: (totalDays) => {
+          return totalDays - 1;
+        },
+        setup: (picker) => {
+          picker.on('preselect', (date1, date2) => {
+            const date1week = week_array[dayjs(date1.dateInstance).day()];
+            const str = date1 ? date1.format('YYYY.MM.DD') + '(' + date1week + ') ' : '';
+          });
+
+          picker.on('selected', (date1, date2) => {
+            const firstDay = $('#date01').val();
+            const pickerStYear = firstDay.substring(2, 4);
+            const pickerEdYear = firstDay.substring(15, 17);
+            const pickerStMonth = parseInt(firstDay.substring(5, 7), 10)
+            const pickerEdMonth = parseInt(firstDay.substring(18, 20), 10)
+            const pickerStDay = parseInt(firstDay.substring(8, 10), 10)
+            const pickerEdDay = parseInt(firstDay.substring(21, 23), 10)
+            $('.date_txt').html(pickerStYear + '년 ' + pickerStMonth + '월 ' + pickerStDay +'일 ' + ' ~ ' + pickerEdYear + '년 ' + pickerEdMonth + '월 ' + pickerEdDay + '일');
+          });
+
+          const firstDay = $('#date01').val();
+          const pickerStYear = firstDay.substring(2, 4);
+          const pickerEdYear = firstDay.substring(15, 17);
+          const pickerStMonth = parseInt(firstDay.substring(5, 7), 10)
+          const pickerEdMonth = parseInt(firstDay.substring(18, 20), 10)
+          const pickerStDay = parseInt(firstDay.substring(8, 10), 10)
+          const pickerEdDay = parseInt(firstDay.substring(21, 23), 10)
+
+          $('.date_txt').html(pickerStYear + '년 ' + pickerStMonth + '월 ' + pickerStDay +'일 ' + ' ~ ' + pickerEdYear + '년 ' + pickerEdMonth + '월 ' + pickerEdDay + '일');
+
+          const inputDay = $('#date01').val();
+          let inputStDay = inputDay.substring(0, 10);
+          let inputEdDay = inputDay.substring(13, 23);
+          inputStDay = inputStDay.replace(/-/g, '.');
+          inputEdDay = inputEdDay.replace(/-/g, '.');
+          $('.date>div').html(inputStDay +'<span>~</span> '+ inputEdDay);
+        }
+      });
+
+      $('button.date_txt').on('click', function(){
+        const inputDay = $('#date01').val();
+        let inputStDay = inputDay.substring(0, 10);
+        let inputEdDay = inputDay.substring(13, 23);
+        inputStDay = inputStDay.replace(/-/g, '.');
+        inputEdDay = inputEdDay.replace(/-/g, '.');
+        $('.date>div').html(inputStDay +'<span>~</span> '+ inputEdDay);
+        layerHide('datePop');
+        fn_search();
+      })
+    });
+
+    function fn_search(){
+      const keyword = document.getElementById("keyword").value;
+      const date01 = document.getElementById("date01").value.split(" - ");
+      const startDt = date01[0];
+      const endDt = date01[1];
+
+      if(keyword) {
+        location.href = fn_pathname("/valet/list?keyword=" + keyword + "&startDt=" + startDt + "&endDt=" + endDt);
+      } else {
+        location.href = fn_pathname("/valet/list?startDt=" + startDt + "&endDt=" + endDt);
+      }
+    }
+
+  </script>
+</head>
+<body>
+<div id="wrap">
+  <div id="container">
+    <div class="car_list_area">
+      <div class="sec">
+        <div class="contents pt">
+          <div class="search type02">
+            <input type="text" id="keyword" th:value="${keyword}" class="rule_noSpace" placeholder="차량번호를 입력하세요." title="차량번호 입력"/>
+            <a href="javascript:fn_search();" class="btn_search">
+              <span class="blind">검색버튼</span>
+            </a>
+          </div>
+
+          <div class="tab_area">
+            <div class="area">
+              <div class="total_num">
+                전체내역 <span th:text="${utlCarCnt}">32</span>
+              </div>
+              <div class="input_date" onclick="layerShow('datePop')">
+                <span class="blind"><input type="text" id="date01" class="date" title="달력 선택"/></span>
+                <div class="date">
+                  <span class="blind">날짜표시</span>
+                  <div></div>
+                </div>
+              </div>
+            </div>
+            <div class="tab_cont min_h scroll_y">
+              <div class="cont active">
+                <ul class="car_list">
+                  <li  th:each="utlCar : ${utlCarList}">
+                    <span class="date" th:text="|${#temporals.format(utlCar.regDt, 'M월 d일')} ${#temporals.dayOfWeekName(utlCar.regDt)}|">2월 7일 수요일</span>
+                    <ul>
+                      <li th:each="car : ${utlCar.userCarList}">
+                        <div class="box">
+                          <div class="box_1">
+                            <div class="txt">
+                              <div class="df">
+                                <strong th:text="${car.carNo}">12마1234</strong>
+                                <div class="chip fill_yellow40" th:if="${car.carDvTy == '502' or car.carDvTy == '503'}">
+                                  <span>방문차량</span>
+                                </div>
+                              </div>
+                            </div>
+                            <th:block th:switch="${car.eeSttCdId}">
+                              <p th:case="101" class="fc_point_green state_txt">입차</p>
+                              <p th:case="102" class="fc_point_blue state_txt">출차</p>
+                            </th:block>
+                          </div>
+                          <div class="box_2">
+                            <div class="date01" th:text="${#temporals.format(car.regDtm, 'yy.MM.dd HH:mm')}">
+                              입주일 : 23.12.16
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!--켈린더 조회 팝업-->
+<div id="datePop" class="pop_layer">
+  <div class="dim"></div>
+  <div class="popup">
+    <div class="pop_head">
+      <strong class="pop_tit">일자 선택</strong>
+      <button type="button" class="btn_close" onclick="layerHide('datePop')"><span class="blind">팝업 닫기</span></button>
+    </div>
+    <div class="pop_cont">
+      <div id="dateArea">
+      </div>
+    </div>
+    <div class="pop_foot">
+      <button type="button" class="btn fill_primary date_txt">
+        <span>조회하기</span>
+      </button>
+    </div>
+  </div>
+</div>
+<th:block th:insert="~{fragments/header}"></th:block>
+<th:block th:insert="~{fragments/footer}"></th:block>
+</body>
+</html>

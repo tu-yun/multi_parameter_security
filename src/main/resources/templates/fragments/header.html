@@ -1,0 +1,8 @@
+<header id="header">
+    <ul>
+        <li class="ico_home" th:classappend="${pathname == '/apt/home/dashBoard' || pathname == '/office/home/dashBoard' ? 'active' : ''}"><a th:href="|${_1stPathname}/home/dashBoard|"><span>홈</span></a></li>
+        <li class="ico_vehicle_regi" th:classappend="${pathname == '/apt/car/visit' || pathname == '/office/car/visit' ? 'active' : ''}" ><a th:href="|${_1stPathname}/car/visit|"><span>방문예약</span></a></li>
+        <li class="ico_data" th:classappend="${pathname == '/apt/valet/list' || pathname == '/office/valet/list' ? 'active' : ''}"><a th:href="|${_1stPathname}/valet/list|"><span>이용내역</span></a></li>
+        <li class="ico_user" th:classappend="${pathname == '/apt/mypage/index' || pathname == '/office/mypage/index' ? 'active' : ''}"><a th:href="|${_1stPathname}/mypage/index|"><span>내정보</span></a></li>
+    </ul>
+</header>
